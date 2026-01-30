@@ -18,6 +18,7 @@ app = Flask(__name__)
 def home():
     return "Discord bot is running!"
 
+# uruchomienie Flask w osobnym wątku
 Thread(target=lambda: app.run(host="0.0.0.0", port=PORT, use_reloader=False)).start()
 
 # ===================== DISCORD BOT =====================
@@ -27,7 +28,8 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 # ===================== LOAD COGS =====================
 async def load_extensions():
-    for extension in [
+    # Lista wszystkich COGs
+    extensions = [
         "mage_stats",
         "bestartifact",
         "strategy",
@@ -35,24 +37,27 @@ async def load_extensions():
         "mage_info",
         "fun_features",
         "admin",
-        "user_builds",
-        "changelog"
-    ]:
+        "user_builds",   # addimmortal, createmarch, showmarch
+        "marchhelp",     # nowe, wybór marchy od innych graczy
+        "changelog"      # komenda z historią aktualizacji
+    ]
+    for ext in extensions:
         try:
-            await bot.load_extension(extension)
-            print(f"Loaded {extension}")
+            await bot.load_extension(ext)
+            print(f"Loaded {ext}")
         except Exception as e:
-            print(f"Error loading {extension}: {e}")
+            print(f"Error loading {ext}: {e}")
 
 # ===================== SETUP HOOK =====================
 @bot.event
 async def setup_hook():
-    # Ładuj wszystkie cogs
+    # Ładuj wszystkie COGs
     await load_extensions()
-    
+
     # Globalna synchronizacja wszystkich slash commandów
+    # Jeśli chcesz, żeby były tylko w jednym guildzie (szybciej), możesz podać guild=discord.Object(id=GUILD_ID)
     await bot.tree.sync()
-    
+
     print(f"{bot.user} online, all commands synced globally!")
 
 # ===================== RUN BOT =====================
