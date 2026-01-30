@@ -9,38 +9,44 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
+CHANGELOG = [
+    {
+        "version": "0.1",
+        "date": "30.01.2026",
+        "changes": [
+            "Added /addimmortal, /createmarch, /showmarch",
+            "Added /bestartifact",
+            "Added /changelog"
+        ],
+        "author": "Fakey <"
+    },
+    {
+        "version": "0.2",
+        "date": "30.01.2026",
+        "changes": [
+            "Persistent storage for /addimmortal and /createmarch using JSON",
+            "Added /marchhelp to see all marches from all users",
+            "Added creator information to marches"
+        ],
+        "author": "Fakey <"
+    }
+]
+
 class Changelog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        # 0.1
-        self.changelog = [
-            {
-                "version": "0.1",
-                "date": "30.01.2026",
-                "changes": [
-                    "Initial release",
-                    "Added /addimmortal, /editimmortal, /removeimmortal",
-                    "Added /createmarch, /editmarch, /removemarch, /showmarch",
-                    "Autocomplete for immortals and marches",
-                    "Ability to name marches",
-                    "Added /bestartifact command",
-                    "Dynamic lists for empty or existing collections"
-                ]
-            }
-        ]
 
-    @app_commands.command(name="changelog", description="Show the bot's changelog and latest updates")
+    @app_commands.command(name="changelog", description="Show the bot's changelog")
     async def changelog(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="📜 Bot Changelog", color=discord.Color.blurple())
-        for entry in self.changelog:
-            changes_text = "\n".join(f"• {c}" for c in entry["changes"])
+        embed = discord.Embed(title="📜 Bot Changelog", color=discord.Color.blue())
+        for entry in CHANGELOG:
             embed.add_field(
-                name=f"Version {entry['version']} — {entry['date']}",
-                value=changes_text,
+                name=f"Version {entry['version']} – {entry['date']}",
+                value="\n".join(entry["changes"]) + f"\n**Author:** {entry['author']}",
                 inline=False
             )
-        embed.set_footer(text="Fakey")
         await interaction.response.send_message(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(Changelog(bot))
+
