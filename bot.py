@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Jan 30 16:59:38 2026
-
 @author: Fakey
 """
 import os
@@ -14,8 +13,9 @@ import asyncio
 
 # ===================== FLASK (KEEP-ALIVE) =====================
 app = Flask(__name__)
+
 @app.route("/")
-def home(): 
+def home():
     return "Discord bot is running!"
 
 Thread(target=lambda: app.run(host="0.0.0.0", port=PORT, use_reloader=False)).start()
@@ -28,8 +28,15 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # ===================== LOAD COGS =====================
 async def load_extensions():
     for extension in [
-        "mage_stats", "bestartifact", "strategy", "reminder",
-        "mage_info", "fun_features", "admin", "user_builds", "changelog"
+        "mage_stats",
+        "bestartifact",
+        "strategy",
+        "reminder",
+        "mage_info",
+        "fun_features",
+        "admin",
+        "user_builds",
+        "changelog"
     ]:
         try:
             await bot.load_extension(extension)
@@ -40,8 +47,12 @@ async def load_extensions():
 # ===================== SETUP HOOK =====================
 @bot.event
 async def setup_hook():
+    # Ładuj wszystkie cogs
     await load_extensions()
-    await bot.tree.sync()  # <- globalna synchronizacja komend
+    
+    # Globalna synchronizacja wszystkich slash commandów
+    await bot.tree.sync()
+    
     print(f"{bot.user} online, all commands synced globally!")
 
 # ===================== RUN BOT =====================
