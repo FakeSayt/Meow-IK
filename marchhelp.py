@@ -2,7 +2,7 @@
 """
 Created on Fri Jan 30 19:59:41 2026
 
-@author: theve
+@author: fakey
 """
 import discord
 from discord.ext import commands
@@ -22,7 +22,10 @@ class MarchSelect(discord.ui.Select):
     def __init__(self, marches):
         self.marches = marches
         options = [
-            discord.SelectOption(label=f"{m['name']} — by {m['author']}", value=m["id"])
+            discord.SelectOption(
+                label=f"{m['name']} — by {m['author']}", 
+                value=m["id"]
+            )
             for m in marches
         ]
         super().__init__(placeholder="Select a march to view...", options=options)
@@ -31,14 +34,18 @@ class MarchSelect(discord.ui.Select):
         march_id = self.values[0]
         march = next(m for m in self.marches if m["id"] == march_id)
 
-        embed = discord.Embed(title=f"🛡️ March: {march['name']}", description=f"Created by **{march['author']}**", color=discord.Color.blue())
+        embed = discord.Embed(
+            title=f"🛡️ {march['author']}'s March: {march['name']}",
+            description=f"Created by **{march['author']}**",
+            color=discord.Color.blue()
+        )
         for i, immortal in enumerate(march["immortals"], start=1):
             embed.add_field(
-                name=f"{i}. {immortal['name']}",
+                name=f"• {immortal['name']}",
                 value=(
-                    f"**Skills:** {immortal['skills']}\n"
-                    f"**Artifact:** {immortal['artifact']}\n"
-                    f"**Attributes:** {immortal['attributes']}"
+                    f"**Artifact:** {immortal.get('artifact','Not set')}\n"
+                    f"**Skills:** {immortal.get('skills','Not set')}\n"
+                    f"**Attributes:** {immortal.get('attributes','Not set')}"
                 ),
                 inline=False
             )
@@ -46,14 +53,17 @@ class MarchSelect(discord.ui.Select):
 
 class MarchHelpView(discord.ui.View):
     def __init__(self, marches):
-        super().__init__(timeout=60)
+        super().__init__(timeout=60)  # <--- timeout 60s
         self.add_item(MarchSelect(marches))
 
 class MarchHelp(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="marchhelp", description="Browse marches created by other players")
+    @app_commands.command(
+        name="marchhelp",
+        description="Browse marches created by other players"
+    )
     async def marchhelp(self, interaction: discord.Interaction):
         data = load_data()
         marches = []
@@ -62,6 +72,7 @@ class MarchHelp(commands.Cog):
             username = user_data.get("username", "Unknown")
             immortals = user_data.get("immortals", {})
             user_marches = user_data.get("marches", {})
+
             for march_name, march_immortals in user_marches.items():
                 detailed_immortals = []
                 for name in march_immortals:
@@ -83,7 +94,11 @@ class MarchHelp(commands.Cog):
             await interaction.response.send_message("❌ No marches shared yet.", ephemeral=True)
             return
 
-        await interaction.response.send_message("📋 Select a march to view details:", view=MarchHelpView(marches))
+        await interaction.response.send_message(
+            "📋 **Select a march to view details:**",
+            view=MarchHelpView(marches)
+        )
 
 async def setup(bot):
     await bot.add_cog(MarchHelp(bot))
+

@@ -25,7 +25,6 @@ def save_scores(scores):
     with open(QUIZ_FILE, "w", encoding="utf-8") as f:
         json.dump(scores, f, ensure_ascii=False, indent=4)
 
-# ===================== Select Menu =====================
 class QuizSelect(discord.ui.Select):
     def __init__(self, correct_answer, user_id):
         self.correct_answer = correct_answer
@@ -56,10 +55,9 @@ class QuizSelect(discord.ui.Select):
 
 class QuizView(discord.ui.View):
     def __init__(self, correct_answer, user_id):
-        super().__init__(timeout=60)
+        super().__init__(timeout=60)  # <--- timeout 60s
         self.add_item(QuizSelect(correct_answer, user_id))
 
-# ===================== Fun Features COG =====================
 class FunFeatures(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -71,7 +69,6 @@ class FunFeatures(commands.Cog):
 
     @app_commands.command(name="quiz", description="Infinity Kingdom interactive quiz")
     async def quiz(self, interaction: discord.Interaction):
-        # Możemy losować różne pytania, na razie jeden przykład
         question = "Which element does Merlin use?"
         correct_answer = "Water"
         options = ["Fire", "Water", "Earth", "Wind"]
