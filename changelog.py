@@ -4,7 +4,6 @@ Created on Fri Jan 30 19:00:31 2026
 
 @author: theve
 """
-
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -13,22 +12,15 @@ CHANGELOG = [
     {
         "version": "0.1",
         "date": "30.01.2026",
-        "changes": [
-            "Added /addimmortal, /createmarch, /showmarch",
-            "Added /bestartifact",
-            "Added /changelog"
-        ],
-        "author": "Fakey <"
-    },
-    {
-        "version": "0.2",
-        "date": "30.01.2026",
-        "changes": [
-            "Persistent storage for /addimmortal and /createmarch using JSON",
-            "Added /marchhelp to see all marches from all users",
-            "Added creator information to marches"
-        ],
-        "author": "Fakey <"
+        "notes": [
+            "Added /addimmortal",
+            "Added /createmarch",
+            "Added /showmarch",
+            "Added /marchhelp",
+            "Added persistent storage on Render",
+            "Added backup for marches",
+            "Initial bot setup by Fakey"
+        ]
     }
 ]
 
@@ -36,15 +28,13 @@ class Changelog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="changelog", description="Show the bot's changelog")
+    @app_commands.command(name="changelog", description="Show latest bot updates")
     async def changelog(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="📜 Bot Changelog", color=discord.Color.blue())
-        for entry in CHANGELOG:
-            embed.add_field(
-                name=f"Version {entry['version']} – {entry['date']}",
-                value="\n".join(entry["changes"]) + f"\n**Author:** {entry['author']}",
-                inline=False
-            )
+        embed = discord.Embed(title="📜 Bot Changelog", color=discord.Color.green())
+        for update in CHANGELOG:
+            notes = "\n".join(f"- {n}" for n in update["notes"])
+            embed.add_field(name=f"v{update['version']} ({update['date']})", value=notes, inline=False)
+        embed.set_footer(text="Fakey <")
         await interaction.response.send_message(embed=embed)
 
 async def setup(bot):
