@@ -10,105 +10,204 @@ from discord.ext import commands
 from discord import app_commands
 import json
 import os
+import shutil
+from datetime import datetime
 
-DATA_FILE = "user_marches.json"
+# =============================
+# PATHS (RENDER PERSISTENT DISK)
+# =============================
+DATA_DIR = "/data"
+DATA_FILE = f"{DATA_DIR}/user_marches.json"
+BACKUP_FILE = f"{DATA_DIR}/user_marches_backup.json"
 
-# Helper: wczytaj dane z pliku
+# =============================
+# ENSURE DATA DIRECTORY EXISTS
+# =============================
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# =============================
+# SAFE LOAD
+# =============================
 def load_data():
     if not os.path.exists(DATA_FILE):
         return {}
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
 
-# Helper: zapisz dane do pliku
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        # jeśli JSON jest uszkodzony → próbujemy backup
+        if os.path.exists(BACKUP_FILE):
+            with open(BACKUP_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        return {}
+
+# =============================
+# SAFE SAVE (ANTI-CORRUPTION)
+# =============================
 def save_data(data):
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=4)
+    # backup przed zapisem
+    if os.path.exists(DATA_FILE):
+        shutil.copy(DATA_FILE, BACKUP_FILE)
 
+    temp_file = DATA_FILE + ".tmp"
+    with open(temp_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+    os.replace(temp_file, DATA_FILE)
+
+# =============================
+# COG
+# =============================
 class UserBuilds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.data = load_data()  # wczytaj przy starcie
+        self.data = load_data()
+
+    def refresh_data(self):
+        self.data = load_data()
 
     # ================= ADD IMMORTAL =================
     @app_commands.command(name="addimmortal", description="Add an immortal to your collection")
-    @app_commands.describe(name="Immortal name", skills="Skills separated by commas", artifact="Artifact name", attributes="Attributes separated by commas")
-    async def addimmortal(self, interaction: discord.Interaction, name: str, skills: str, artifact: str, attributes: str):
+    async def addimmortal(
+        self,
+        interaction: discord.Interaction,
+        name: str,
+        skills: str,
+        artifact: str,
+        attributes: str
+    ):
+        self.refresh_data()
         user_id = str(interaction.user.id)
-        user_name = str(interaction.user)
+
+        self.data.setdefault(user_id, {
+            "username": str(interaction.user),
+            "immortals": [],
+            "marches": []
+        })
+
+        # block duplicates
+        if any(i["name"].lower() == name.lower() for i in self.data[user_id]["immortals"]):
+            await interaction.response.send_message("❌ Immortal already exists.", ephemeral=True)
+            return
+
         immortal = {
             "name": name,
             "skills": [s.strip() for s in skills.split(",")],
             "artifact": artifact,
-            "attributes": [a.strip() for a in attributes.split(",")]
+            "attributes": [a.strip() for a in attributes.split(",")],
+            "created": datetime.utcnow().isoformat()
         }
-        self.data.setdefault(user_id, {"username": user_name, "immortals": [], "marches": []})
+
         self.data[user_id]["immortals"].append(immortal)
         save_data(self.data)
-        await interaction.response.send_message(f"✅ Immortal **{name}** added to your collection.", ephemeral=True)
+
+        await interaction.response.send_message(f"✅ Immortal **{name}** added.", ephemeral=True)
 
     # ================= CREATE MARCH =================
-    @app_commands.command(name="createmarch", description="Create a march with up to 4 immortals")
-    @app_commands.describe(name="Name of your march", immortal1="First immortal", immortal2="Second immortal (optional)", immortal3="Third immortal (optional)", immortal4="Fourth immortal (optional)")
-    async def createmarch(self, interaction: discord.Interaction, name: str, immortal1: str, immortal2: str = None, immortal3: str = None, immortal4: str = None):
+    @app_commands.command(name="createmarch", description="Create a march from your immortals")
+    async def createmarch(
+        self,
+        interaction: discord.Interaction,
+        name: str,
+        immortal1: str,
+        immortal2: str = None,
+        immortal3: str = None,
+        immortal4: str = None
+    ):
+        self.refresh_data()
         user_id = str(interaction.user.id)
-        user_name = str(interaction.user)
-        user_data = self.data.get(user_id)
-        if not user_data or not user_data["immortals"]:
-            await interaction.response.send_message("❌ You have no immortals yet. Use /addimmortal first.", ephemeral=True)
+
+        user = self.data.get(user_id)
+        if not user or not user["immortals"]:
+            await interaction.response.send_message("❌ No immortals found.", ephemeral=True)
             return
 
-        immortals_names = [immortal1, immortal2, immortal3, immortal4]
-        immortals_list = []
-        for name_ in immortals_names:
-            if name_:
-                match = next((i for i in user_data["immortals"] if i["name"].lower() == name_.lower()), None)
+        selected = []
+        for imm_name in [immortal1, immortal2, immortal3, immortal4]:
+            if imm_name:
+                match = next(
+                    (i for i in user["immortals"] if i["name"].lower() == imm_name.lower()),
+                    None
+                )
                 if not match:
-                    await interaction.response.send_message(f"❌ Immortal **{name_}** not found in your collection.", ephemeral=True)
+                    await interaction.response.send_message(
+                        f"❌ Immortal **{imm_name}** not found.",
+                        ephemeral=True
+                    )
                     return
-                immortals_list.append(match)
+                selected.append(match)
 
-        march = {"name": name, "immortals": immortals_list, "creator": user_name}
-        user_data["marches"].append(march)
+        march = {
+            "name": name,
+            "creator": str(interaction.user),
+            "immortals": selected,
+            "created": datetime.utcnow().isoformat()
+        }
+
+        user["marches"].append(march)
         save_data(self.data)
-        await interaction.response.send_message(f"✅ March **{name}** created with {len(immortals_list)} immortals.", ephemeral=True)
 
-    # ================= SHOW MARCH (twoje) =================
+        await interaction.response.send_message(
+            f"✅ March **{name}** created ({len(selected)} immortals).",
+            ephemeral=True
+        )
+
+    # ================= SHOW MY MARCHES =================
     @app_commands.command(name="showmarch", description="Show your marches")
     async def showmarch(self, interaction: discord.Interaction):
+        self.refresh_data()
         user_id = str(interaction.user.id)
-        user_data = self.data.get(user_id)
-        if not user_data or not user_data["marches"]:
-            await interaction.response.send_message("❌ You have no marches yet.", ephemeral=True)
+
+        user = self.data.get(user_id)
+        if not user or not user["marches"]:
+            await interaction.response.send_message("❌ You have no marches.", ephemeral=True)
             return
 
-        embed = discord.Embed(title=f"{interaction.user}'s Marches", color=discord.Color.blurple())
-        for march in user_data["marches"]:
-            march_text = ""
+        embed = discord.Embed(
+            title=f"{interaction.user.name}'s Marches",
+            color=discord.Color.blurple()
+        )
+
+        for march in user["marches"]:
+            value = ""
             for imm in march["immortals"]:
-                march_text += f"• {imm['name']} | Artifact: {imm['artifact']} | Skills: {', '.join(imm['skills'])} | Attributes: {', '.join(imm['attributes'])}\n"
-            embed.add_field(name=march["name"], value=march_text, inline=False)
+                value += (
+                    f"• **{imm['name']}**\n"
+                    f"  Artifact: {imm['artifact']}\n"
+                    f"  Skills: {', '.join(imm['skills'])}\n"
+                    f"  Attributes: {', '.join(imm['attributes'])}\n\n"
+                )
+            embed.add_field(name=march["name"], value=value, inline=False)
+
         await interaction.response.send_message(embed=embed)
 
-    # ================= MARCH HELP =================
+    # ================= MARCH HELP (GLOBAL) =================
     @app_commands.command(name="marchhelp", description="See all marches from all users")
     async def marchhelp(self, interaction: discord.Interaction):
-        all_marches = []
-        for user_id, user_data in self.data.items():
-            for march in user_data.get("marches", []):
-                all_marches.append((march["name"], march["creator"], march["immortals"]))
+        self.refresh_data()
 
-        if not all_marches:
-            await interaction.response.send_message("❌ No marches found yet.", ephemeral=True)
+        embed = discord.Embed(
+            title="📜 Community Marches",
+            color=discord.Color.green()
+        )
+
+        found = False
+        for user in self.data.values():
+            for march in user.get("marches", []):
+                found = True
+                names = ", ".join(i["name"] for i in march["immortals"])
+                embed.add_field(
+                    name=f"{march['name']} (by {march['creator']})",
+                    value=names,
+                    inline=False
+                )
+
+        if not found:
+            await interaction.response.send_message("❌ No marches available.", ephemeral=True)
             return
-
-        embed = discord.Embed(title="📜 All User Marches", color=discord.Color.green())
-        for march_name, creator, immortals in all_marches:
-            march_text = "\n".join([f"• {imm['name']} | Artifact: {imm['artifact']}" for imm in immortals])
-            embed.add_field(name=f"{march_name} (by {creator})", value=march_text, inline=False)
 
         await interaction.response.send_message(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(UserBuilds(bot))
-
