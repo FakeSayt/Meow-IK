@@ -1,0 +1,10 @@
+HAH Outlet — 2026-10-09
+
+51 testów zakończonych sukcesem w 87.385 s.
+8 testów sklepu, 6 panelu, 5 integracyjnych, 20 zdjęć i ponawiania zapisów, 12 nowych testów zamówień i wiadomości.
+Składnia: 8 zmodyfikowanych/nowych plików PHP oraz app.js bez błędów.
+Nowe testy: kolejność etapów, brak ponownego odjęcia stanu, wysyłka tylko raz, odrzucenie i ponowienie poczty, ochrona przed starszą próbą, admin/CSRF, zachowanie statystyk, zapis e-maila i ceny dostawy, HTML+tekst, wspólny voucher, edycja adresu sklepu, voucher na telefonie, Facebook otwierany bezpośrednio z opcjonalnym odtwarzaczem.
+W new.zip przywrócono istniejące połączenie renderera produktów z filtrami i ulubionymi, którego brak wykazało 6 wcześniejszych testów. Końcowy zestaw jest kompletny i przechodzi.
+Przegląd kodu: brak nierozwiązanych istotnych uwag.
+Wszystkie wiadomości testowe zatrzymano w lokalnym odbiorniku. Nie wysłano poczty klientom ani nie zmieniono hostingu. Nie potwierdzono osadzania konkretnego filmu Facebooka.
+Podglądy zawierają fikcyjne dane. Paczka nie zawiera konfiguracji private/, sesji, bazy SQL, rzeczywistych danych klientów ani zdjęć produktów.
