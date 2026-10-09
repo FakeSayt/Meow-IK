@@ -12,12 +12,14 @@ Przygotowano odświeżony sklep i panel administratora na podstawie przesłanego
 - Wyszukiwanie produktów po nazwie, rozmiarze, materiale, kodzie lub ID; filtry produktów ukrytych, widocznych, wyprzedanych i z małym stanem.
 - Wyszukiwanie zamówień, filtry statusów i polskie opisy statusów.
 - Czytelniejsze podsumowanie istniejących statystyk oraz szybki dostęp do produktów z małym stanem.
+- Dodawanie zdjęć przez małe pola formularza, omijające problem „Niepełna część pliku”. Alternatywne standardowe przesyłanie automatycznie wraca do trybu zgodnego z hostingiem, jeśli zostanie odrzucone.
+- Galeria w panelu: podgląd przed zapisem, dodawanie kolejnych zdjęć, zastępowanie, usuwanie, kolejność i wybór zdjęcia głównego. Błędy zachowują formularz, a ponowienie zapisu po utracie odpowiedzi nie dubluje produktu.
 
 ## Wgranie na istniejący hosting
 
 1. Zrób kopię obecnych plików sklepu. Zachowaj także standardową kopię bazy danych na hostingu.
 2. Rozpakuj `HAH-Outlet-aktualizacja.zip` na komputerze.
-3. Wgraj zawartość folderu `hahoutlet/` do istniejącego folderu sklepu, np. `public_html/hahoutlet/`. Podmień cztery istniejące pliki i dodaj cztery nowe pliki wymienione niżej. Wgraj komplet aktualizacji razem.
+3. Wgraj zawartość folderu `hahoutlet/` do istniejącego folderu sklepu, np. `public_html/hahoutlet/`. Podmień sześć istniejących plików i dodaj cztery nowe pliki wymienione niżej. Wgraj komplet aktualizacji razem.
 4. Pozostaw dotychczasową konfigurację `private/`, katalog `uploads/`, sesje i bazę danych. Paczka nie zawiera tych danych ani haseł. Do tej aktualizacji nie importuj ponownie przesłanego pliku SQL.
 5. Odśwież stronę i panel. Gdy hosting ma dodatkowy cache, wyczyść go. Sprawdź menu mobilne, ulubione, filtr rozmiaru, koszyk, logowanie i zapis produktu.
 6. Sprawdź wysyłkę e-mail oraz Facebook LIVE na docelowym hostingu. Lokalne testy korzystały z odbiornika wiadomości testowych, bez wysyłania poczty na zewnątrz. Sam Facebook decyduje o możliwości osadzenia transmisji.
@@ -28,6 +30,8 @@ Pliki zastępowane:
 - `admin.php`
 - `app.js`
 - `style.css`
+- `admin-media.js`
+- `admin-media-upload.php`
 
 Nowe pliki:
 
@@ -38,7 +42,9 @@ Nowe pliki:
 
 Nie potrzeba migracji bazy danych. Obsługa zamówień, płatności przelewem, rezerwacji LIVE, promocji, voucherów oraz przesyłania zdjęć korzysta z istniejącego zaplecza PHP.
 
-Przy wyłączonym JavaScript panel zachowuje istniejące formularze i nawigację do sekcji na jednej stronie. Filtry i ulubione wymagają JavaScript, podobnie jak dotychczasowy koszyk sklepu.
+Jeśli wcześniejsza modernizacja jest już wgrana, wystarczy mała paczka `HAH-Outlet-zdjecia-poprawka.zip`: zastępuje tylko `admin.php`, `admin-media.js`, `admin-media-upload.php` i `design.css`. Szczegóły: `ZDJECIA-WDROZENIE.md`.
+
+Przy wyłączonym JavaScript panel zachowuje istniejące formularze i nawigację do sekcji na jednej stronie. Dodawanie zdjęć, zarządzanie galerią, filtry i ulubione wymagają JavaScript, podobnie jak dotychczasowy koszyk sklepu.
 
 ## Weryfikacja i podglądy
 
@@ -52,4 +58,4 @@ Nie wdrożono zmian na Twoim hostingu. Paczka jest gotowa do wgrania.
 
 ## Powrót do poprzedniej wersji
 
-Przywróć cztery podmienione pliki z kopii oraz usuń cztery nowe pliki. Ta aktualizacja nie zmienia struktury ani zawartości bazy danych.
+Przywróć sześć podmienionych plików z kopii oraz usuń cztery nowe pliki. Samo wgranie tej aktualizacji nie zmienia struktury ani zawartości bazy danych. Późniejsze zapisanie produktu w panelu zapisuje wybraną galerię w istniejącej bazie.

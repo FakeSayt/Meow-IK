@@ -1,9 +1,17 @@
 # HAH Outlet — pliki do pobrania
 
-Paczka zawiera 8 plików aktualizacji sklepu i panelu, instrukcję wdrożenia oraz podglądy.
+## Poprawka dodawania i edycji zdjęć
 
-Otwórz `HAH-Outlet-paczka.zip` i wybierz **Download raw file**, aby pobrać ZIP.
+[Pobierz HAH-Outlet-zdjecia-poprawka.zip](https://github.com/FakeSayt/Meow-IK/raw/refs/heads/codex/hah-outlet-files-20261009/hah-outlet-downloads/HAH-Outlet-zdjecia-poprawka.zip)
 
-Wgraj zawartość folderu `hahoutlet/` z paczki do istniejącego sklepu. Instrukcja: `WDROZENIE.md`.
+Jeśli wcześniejsza modernizacja jest już wgrana, wystarczy ta paczka. Podmień 4 pliki z folderu `hahoutlet/` i odśwież panel Ctrl+F5. Instrukcja: [ZDJECIA-WDROZENIE.md](ZDJECIA-WDROZENIE.md).
 
-Bez importu bazy danych. Paczka nie zawiera konfiguracji private/, haseł, sesji ani bazy. Podglądy przygotowano na danych testowych.
+Domyślny tryb zgodny z hostingiem omija problem niepełnych części pliku. Galeria pozwala dodawać, zastępować i usuwać zdjęcia, zmieniać kolejność i wybrać zdjęcie główne. Błędy zachowują formularz; ponowienie po utracie odpowiedzi nie tworzy duplikatów. 35 testów zakończonych sukcesem.
+
+## Pełna modernizacja sklepu i panelu
+
+[Pobierz HAH-Outlet-paczka.zip](https://github.com/FakeSayt/Meow-IK/raw/refs/heads/codex/hah-outlet-files-20261009/hah-outlet-downloads/HAH-Outlet-paczka.zip)
+
+Pełna aktualizacja zawiera 10 plików, najnowszą poprawkę zdjęć, instrukcje i podglądy na danych testowych. Instrukcja: [WDROZENIE.md](WDROZENIE.md).
+
+Bez importu bazy danych. Paczki nie zawierają konfiguracji private/, haseł, sesji ani rzeczywistych zdjęć produktów. Zmiany trzeba wgrać na hosting.
