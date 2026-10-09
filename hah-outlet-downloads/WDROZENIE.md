@@ -42,7 +42,7 @@ Nowe pliki:
 
 Nie potrzeba migracji bazy danych. Obsługa zamówień, płatności przelewem, rezerwacji LIVE, promocji, voucherów oraz przesyłania zdjęć korzysta z istniejącego zaplecza PHP.
 
-Jeśli wcześniejsza modernizacja jest już wgrana, wystarczy mała paczka `HAH-Outlet-zdjecia-poprawka.zip`: zastępuje tylko `admin.php`, `admin-media.js`, `admin-media-upload.php` i `design.css`. Szczegóły: `ZDJECIA-WDROZENIE.md`.
+Jeśli wcześniejsza modernizacja jest już wgrana, wystarczy mała paczka `HAH-Outlet-zdjecia-v2.zip`: zastępuje tylko `admin.php`, `admin-media.js`, `admin-media-upload.php` i `design.css`. Szczegóły: `ZDJECIA-WDROZENIE.md`.
 
 Przy wyłączonym JavaScript panel zachowuje istniejące formularze i nawigację do sekcji na jednej stronie. Dodawanie zdjęć, zarządzanie galerią, filtry i ulubione wymagają JavaScript, podobnie jak dotychczasowy koszyk sklepu.
 

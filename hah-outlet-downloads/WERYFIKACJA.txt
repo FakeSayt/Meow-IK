@@ -1,6 +1,6 @@
 HAH Outlet — weryfikacja 2026-10-09
 
-35 testów zakończonych sukcesem: 8 testów interfejsu sklepu, 6 testów panelu, 5 testów integracyjnych, 16 testów zdjęć i ponawiania zapisów. Pełny przebieg: 95.893 s, wynik OK.
+39 testów zakończonych sukcesem: 8 testów interfejsu sklepu, 6 testów panelu, 5 testów integracyjnych, 20 testów zdjęć i ponawiania zapisów. Pełny przebieg: 110.788 s, wynik OK.
 Składnia zmodyfikowanych plików admin.php, admin-media-upload.php oraz admin-media.js bez błędów.
 PHP 8.4.26; MariaDB 11.8.6; Chromium 151.
 Tryb zgodny z hostingiem przesłał rzeczywiste zdjęcie bez zmiany bajtów przy file_uploads=Off, niedostępnym upload_tmp_dir i post_max_size=128K.
@@ -10,3 +10,5 @@ Wiadomości testowe zapisane wyłącznie lokalnie; nie sprawdzano doręczania po
 Paczka pełnej aktualizacji zawiera 6 podmienianych i 4 nowe pliki oraz instrukcje. Mała poprawka zdjęć zawiera 4 pliki do podmiany.
 Bez importu SQL, konfiguracji private/, sesji, haseł i rzeczywistych zdjęć produktów.
 Nie wdrożono zmian na hostingu.
+
+Wersja 2: przetestowano pomijanie pól formularza większych niż 8192 znaki, blokadę blob: przez CSP, ścisłą walidację danych hex i długości oraz idempotentne ponawianie. Dokładna konfiguracja autobothub.pl pozostaje niepotwierdzona.
