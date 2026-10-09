@@ -1,0 +1,5 @@
+Ran 61 tests in 98.860s
+
+OK
+
+Test wysyłki sprawdza bezpośredni link z numerem 001234567890123456789012 w HTML, tekście e-maila i panelu administratora. Zachowanie zer początkowych, stan magazynowy i brak zwykłych duplikatów bez zmian. Oba pliki PHP mają poprawną składnię. Wszystkie testowe wiadomości zatrzymano lokalnie.
