@@ -1,0 +1,11 @@
+HAH Outlet — filtry i potwierdzenie wpłaty
+
+Ran 61 tests in 98.761s
+
+OK
+
+51 istniejących testów oraz 10 nowych: błędy i powolne pobieranie rezerwacji, pusta kolekcja, błąd katalogu i ponowienie, filtry na telefonie bez poziomego przepełnienia, potwierdzenie płatności HTML+tekst tylko raz, stan magazynowy odejmowany tylko raz, błąd poczty i retry z zachowaniem płatności, brak duplikatu po niepewnym wyniku wysyłki, e-mail dla starszych zamówień, admin+CSRF.
+9 plików PHP oraz app.js i shop-features.js: poprawna składnia.
+Podglądy komputer/telefon/mail ocenione wizualnie. Przegląd kodu po poprawkach: brak nierozwiązanych uwag Critical/Important.
+Testowe e-maile zatrzymano lokalnie; nie wysyłano poczty klientom i nie zmieniono hostingu. Nie zweryfikowano osadzania konkretnego filmu Facebooka.
+Paczka zawiera wyłącznie jawne pliki aplikacji, instrukcje i fikcyjne podglądy, bez private/, SQL, sesji, zdjęć produktów i danych klientów.

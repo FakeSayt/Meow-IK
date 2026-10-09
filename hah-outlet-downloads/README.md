@@ -1,5 +1,11 @@
 # HAH Outlet — pliki do pobrania
 
+## Najnowsza paczka — filtry i potwierdzenie wpłaty
+
+[Pobierz HAH-Outlet-filtry-potwierdzenie-wplaty.zip](https://github.com/FakeSayt/Meow-IK/raw/refs/heads/codex/hah-outlet-files-20261009/hah-outlet-downloads/HAH-Outlet-filtry-potwierdzenie-wplaty.zip)
+
+13 plików do wgrania. Nowy panel filtrów na komputerze i telefonie, poprawiona obsługa ładowania/pustej kolekcji/błędów, mail potwierdzający wpłatę, możliwość ponowienia po odrzuceniu poczty. Zawiera również wcześniejsze etapy realizacji, powiadomienie o przesyłce, szablony wiadomości, voucher i przycisk Facebook LIVE. 61 testów przeszło lokalnie. Instrukcja: [FILTRY-PLATNOSC-WDROZENIE.md](FILTRY-PLATNOSC-WDROZENIE.md). Podglądy w ZIP.
+
 ## Aktualizacja zamówień, wysyłki, e-maili, voucherów i LIVE
 
 [Pobierz HAH-Outlet-zamowienia-live-maile.zip](https://github.com/FakeSayt/Meow-IK/raw/refs/heads/codex/hah-outlet-files-20261009/hah-outlet-downloads/HAH-Outlet-zamowienia-live-maile.zip)
